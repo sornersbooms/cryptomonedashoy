@@ -2,12 +2,9 @@
   "$schema": "https://railway.app/railway.schema.json",
   "services": [
     {
-      "name": "news-scraper-api",
-      "rootDir": "./news-scraper-api",
-      "startCommand": "node server.js"
+      "rootDir": "./news-scraper-api"
     },
     {
-      "name": "frontend",
       "rootDir": "./frontend"
     }
   ]
