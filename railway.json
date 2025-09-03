@@ -1,0 +1,16 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "services": [
+    {
+      "name": "news-scraper-api",
+      "rootDir": "./news-scraper-api",
+      "startCommand": "node server.js"
+    },
+    {
+      "name": "frontend",
+      "rootDir": "./frontend",
+      "buildCommand": "npm run build",
+      "startCommand": "npm run start"
+    }
+  ]
+}
