@@ -8,9 +8,7 @@
     },
     {
       "name": "frontend",
-      "rootDir": "./frontend",
-      "buildCommand": "npm run build",
-      "startCommand": "npm run start"
+      "rootDir": "./frontend"
     }
   ]
 }
