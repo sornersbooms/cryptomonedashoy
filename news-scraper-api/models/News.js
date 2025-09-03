@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//hola masa
 const NewsSchema = new mongoose.Schema({
   title: {
     type: String,
