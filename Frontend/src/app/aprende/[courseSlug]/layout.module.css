@@ -1,0 +1,18 @@
+/* BitcoinCourseLayout CSS */
+
+.courseContainer {
+  /* Contenedor principal */
+}
+
+.mainContent {
+  padding: 2rem;
+  transition: margin-left 0.3s ease-in-out;
+  margin-left: 0; /* Por defecto no hay margen */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mainContent.shifted {
+    margin-left: 0; /* En móvil, el contenido no se desplaza */
+  }
+}

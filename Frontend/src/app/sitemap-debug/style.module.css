@@ -1,0 +1,134 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title {
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.statsCard {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #007bff;
+}
+
+.statsTitle {
+  color: #007bff;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.statItem {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.statLabel {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 5px;
+}
+
+.statValue {
+  font-size: 1.1rem;
+  color: #212529;
+}
+
+.errorBox {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 1px solid #f5c6cb;
+}
+
+.urlsCard {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+.urlsList {
+  list-style: none;
+  padding: 0;
+}
+
+.urlsList li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #bbdefb;
+}
+
+.urlsList a {
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.urlsList a:hover {
+  text-decoration: underline;
+}
+
+.configCard {
+  background: #f3e5f5;
+  border-left: 4px solid #9c27b0;
+}
+
+.verificationCard {
+  background: #e8f5e8;
+  border-left: 4px solid #4caf50;
+}
+
+.verificationList {
+  padding-left: 20px;
+}
+
+.verificationList li {
+  margin-bottom: 8px;
+  color: #2e7d32;
+}
+
+.verificationList a {
+  color: #2e7d32;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.verificationList a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}

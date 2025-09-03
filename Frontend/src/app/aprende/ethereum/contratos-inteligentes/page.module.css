@@ -1,0 +1,79 @@
+/* Base styles for the main container */
+.container {
+  max-width: 960px; /* Increased max-width for a more spacious feel */
+  margin: 2rem auto; /* More vertical breathing room */
+  padding: 2rem; /* Generous padding */
+  background-color: #ffffff; /* Clean white background */
+  border-radius: 12px; /* Slightly more rounded corners for a modern look */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Soft, impactful shadow */
+  font-family: 'Arial', sans-serif; /* A clean, readable font */
+  line-height: 1.7; /* Improved readability for paragraphs */
+  color: #333; /* Darker text for better contrast */
+}
+
+/* Styles for the main title */
+.title {
+  font-size: 2.8rem; /* Larger, more impactful title */
+  font-weight: 800; /* Extra bold for prominence */
+  color: #2c3e50; /* Deep blue-grey for a professional feel */
+  margin-bottom: 1.5rem; /* More space below the title */
+  text-align: center; /* Center align for visual balance */
+  letter-spacing: -0.03em; /* Slightly tighter letter spacing for modern look */
+}
+
+/* Styles for subtitles */
+.subtitle {
+  font-size: 2rem; /* Subtitles are also larger */
+  font-weight: 700; /* Bold */
+  color: #34495e; /* Slightly lighter blue-grey */
+  margin-top: 2rem; /* Space above subtitles */
+  margin-bottom: 1rem; /* Space below subtitles */
+  border-bottom: 2px solid #e0e0e0; /* Subtle separator */
+  padding-bottom: 0.5rem; /* Padding for the separator */
+}
+
+/* Styles for paragraphs */
+.paragraph {
+  font-size: 1.1rem; /* Slightly larger base font size for readability */
+  margin-bottom: 1.2rem; /* Consistent spacing between paragraphs */
+}
+
+/* Strong text for emphasis */
+.paragraph strong {
+  color: #2980b9; /* A vibrant blue for emphasized text */
+  font-weight: 700;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem; /* Smaller margin on smaller screens */
+    padding: 1.5rem; /* Reduced padding */
+  }
+
+  .title {
+    font-size: 2.2rem; /* Adjust title size for smaller screens */
+  }
+
+  .subtitle {
+    font-size: 1.7rem; /* Adjust subtitle size */
+  }
+
+  .paragraph {
+    font-size: 1rem; /* Adjust paragraph size */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem; /* Even less padding on very small screens */
+  }
+
+  .title {
+    font-size: 1.8rem; /* Further reduce title size */
+  }
+
+  .subtitle {
+    font-size: 1.4rem; /* Further reduce subtitle size */
+  }
+}

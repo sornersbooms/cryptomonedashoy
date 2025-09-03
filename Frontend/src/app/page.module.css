@@ -1,0 +1,80 @@
+.main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+.newsGrid {
+  display: grid;
+  grid-template-columns: 1fr; /* 1 column on mobile */
+  gap: 1.5rem;
+}
+
+/* 2 columns for tablets */
+@media (min-width: 768px) {
+  .newsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 3-column layout for desktops */
+@media (min-width: 1024px) {
+  .main {
+    grid-template-columns: 240px 1fr 240px; /* Adjusted sidebars */
+  }
+
+  .newsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .leftSidebar,
+  .rightSidebar {
+    background-color: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+}
+
+/* 4 columns for large desktops */
+@media (min-width: 1400px) {
+  .newsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.leftSidebar ul,
+.rightSidebar ul {
+  list-style: none;
+  margin-top: 1rem;
+}
+
+.leftSidebar li,
+.rightSidebar li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(var(--color-black), 0.1);
+}
+
+.leftSidebar li:last-child,
+.rightSidebar li:last-child {
+  border-bottom: none;
+}
+
+.rightSidebar li {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (prefers-color-scheme: dark) {
+  .leftSidebar,
+  .rightSidebar {
+    background-color: var(--background-color);
+    border: 1px solid rgba(var(--color-white), 0.2);
+  }
+
+  .leftSidebar li,
+  .rightSidebar li {
+    border-color: rgba(var(--color-white), 0.2);
+  }
+}
