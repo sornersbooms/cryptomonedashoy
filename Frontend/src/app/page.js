@@ -1,6 +1,7 @@
 import styles from "./page.module.css";
 import NewsCard from "../components/NewsCard";
 import { getRandomLocalImage } from "../utils/imageUtils";
+import NoticiasPage from "./noticias/page";
 
 async function getNews() {
   try {
@@ -59,6 +60,8 @@ export default async function Home() {
             imageUrl={getRandomLocalImage()} // Pass a random local image
           />
         ))}
+        <NoticiasPage />
+
       </section>
 
       <aside className={styles.rightSidebar}>
