@@ -90,18 +90,14 @@ const StructuredSummary = ({ text }) => {
 
 // Generar las rutas estáticas en el momento del build
 export async function generateStaticParams() {
-  console.log('generateStaticParams: Executing.');
   try {
-    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { cache: 'no-store' });
-    console.log(`generateStaticParams: Fetch response ok: ${res.ok}`);
+    const res = await fetch(`${process.env.API_URL}/api/news`, { next: { revalidate: 3600 } });
     if (!res.ok) {
       throw new Error('Failed to fetch news for static params');
     }
     const { data: news } = await res.json();
-    console.log('generateStaticParams: Data received from API:', news);
 
     if (!Array.isArray(news)) {
-      console.log('generateStaticParams: Data is not an array.');
       return [];
     }
 
@@ -115,24 +111,21 @@ export async function generateStaticParams() {
 }
 
 // Función para obtener una única noticia por su slug
+// IDEALMENTE, el backend debería tener un endpoint como /api/news/by-slug/:slug
+// Por ahora, se obtiene todo y se filtra, lo cual es ineficiente para muchas noticias.
 async function getNoticia(slug) {
-  console.log(`getNoticia: Searching for slug: ${slug}`);
   try {
-    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { cache: 'no-store' });
-    console.log(`getNoticia: Fetch response ok: ${res.ok}`);
+    const res = await fetch(`${process.env.API_URL}/api/news`, { next: { revalidate: 3600 } });
     if (!res.ok) {
       throw new Error('Failed to fetch news for single item lookup');
     }
     const { data: news } = await res.json();
-    console.log('getNoticia: Data received from API:', news);
 
     if (!Array.isArray(news)) {
-      console.log('getNoticia: Data is not an array.');
       return null;
     }
 
     const noticia = news.find(item => slugify(item.title) === slug);
-    console.log('getNoticia: Found noticia:', noticia);
     return noticia;
   } catch (error) {
     console.error(`Error fetching noticia with slug ${slug}:`, error);
