@@ -36,7 +36,7 @@ export default function Header() {
         <div className={styles.mobileMenu}>
           <Link href="/noticias" onClick={toggleMenu}>Noticias</Link>
           <Link href="/aprende" onClick={toggleMenu}>Aprende</Link>
-          <Link href="/mercado" onClick={toggleMenu}>Mercado</Link>
+         
         </div>
       )}
     </header>
