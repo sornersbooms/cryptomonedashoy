@@ -5,7 +5,7 @@ import NoticiasPage from "./noticias/page";
 
 async function getNews() {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/news`, { cache: 'no-store' });
+    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { cache: 'no-store' });
     if (!res.ok) {
       throw new Error('Failed to fetch data');
     }
@@ -60,7 +60,6 @@ export default async function Home() {
             imageUrl={getRandomLocalImage()} // Pass a random local image
           />
         ))}
-        <NoticiasPage />
 
       </section>
 
