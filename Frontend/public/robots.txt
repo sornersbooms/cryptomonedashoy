@@ -1,16 +1,16 @@
 # Robots.txt para Criptomonedas Hoy
 # https://cryptomonedashoy.com
 
-# Permitir acceso a todos los crawlers
+# Allow access to all crawlers
 User-agent: *
 Allow: /
 
-# Bloquear acceso a archivos de sistema
+# Block access to system files
 Disallow: /_next/
 Disallow: /api/
 Disallow: /.env*
 
-# Permitir acceso a recursos importantes
+# Allow access to important resources
 Allow: /images/
 Allow: /public/
 Allow: /sitemap.xml
@@ -18,6 +18,3 @@ Allow: /robots.txt
 
 # Sitemap
 Sitemap: https://cryptomonedashoy.com/sitemap.xml
-
-# Crawl-delay para ser respetuoso con el servidor
-Crawl-delay: 1
