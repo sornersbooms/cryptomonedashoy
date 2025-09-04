@@ -5,7 +5,7 @@ import { getRandomLocalImage } from '../../utils/imageUtils';
 
 async function getNews() {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/news`, { next: { revalidate: 3600 } }); // Revalida cada hora
+    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { next: { revalidate: 3600 } }); // Revalida cada hora
     if (!res.ok) {
       throw new Error('Failed to fetch news');
     }
