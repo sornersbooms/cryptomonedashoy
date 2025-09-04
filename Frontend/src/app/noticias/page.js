@@ -4,9 +4,8 @@ import styles from './noticias.module.css';
 import { getRandomLocalImage } from '../../utils/imageUtils';
 
 async function getNews() {
-  console.log('Executing getNews()');
   try {
-    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { cache: 'no-store' }); // Deshabilita la caché
+    const res = await fetch(`${process.env.API_URL}/api/news`, { next: { revalidate: 3600 } }); // Revalida cada hora
     if (!res.ok) {
       throw new Error('Failed to fetch news');
     }
@@ -29,7 +28,7 @@ const getSummary = (text) => {
   const cleanText = text.replace(/\*\*/g, '').replace(/\n/g, ' ');
   return cleanText.length > 100 ? cleanText.substring(0, 97) + '...' : cleanText;
 };
-// Esto es un cambio para forzar el redespliegue
+
 export default async function NoticiasPage() {
   const news = await getNews();
   const latestNews = news.slice(0, 20);
