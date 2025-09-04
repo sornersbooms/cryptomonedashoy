@@ -28,7 +28,7 @@ const getSummary = (text) => {
   const cleanText = text.replace(/\*\*/g, '').replace(/\n/g, ' ');
   return cleanText.length > 100 ? cleanText.substring(0, 97) + '...' : cleanText;
 };
-
+// Esto es un cambio para forzar el redespliegue
 export default async function NoticiasPage() {
   const news = await getNews();
   const latestNews = news.slice(0, 20);

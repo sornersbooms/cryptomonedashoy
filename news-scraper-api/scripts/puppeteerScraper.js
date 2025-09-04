@@ -4,7 +4,6 @@ const OpenAI = require('openai');
 
 dotenv.config({ path: __dirname + '/../config/config.env' });
 const News = require('../models/News');
-const connectDB = require('../config/db');
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -40,9 +39,6 @@ Requisitos para el artículo:
     return null;
   }
 }
-
-// Connect to DB
-connectDB();
 
 const sources = [
   {
@@ -130,7 +126,6 @@ const scrapeNews = async () => {
 
   await browser.close();
   console.log('Scraping complete.');
-  process.exit(0);
 };
 
-scrapeNews();
+module.exports = scrapeNews;
