@@ -36,8 +36,11 @@ export default async function sitemap() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), api.timeout);
 
+    const fullApiUrl = `${apiUrl}${api.endpoints.news}`;
+    console.log(`Sitemap: Fetching news from: ${fullApiUrl}`);
+
     // Obtener todas las noticias desde la API
-    const response = await fetch(`${apiUrl}${api.endpoints.news}`, {
+    const response = await fetch(fullApiUrl, {
       next: { revalidate: revalidateTime },
       headers: {
         'Content-Type': 'application/json',
@@ -47,8 +50,11 @@ export default async function sitemap() {
     
     clearTimeout(timeoutId);
     
+    console.log(`Sitemap: News API response status: ${response.status}, ok: ${response.ok}`);
+
     if (response.ok) {
       const newsData = await response.json();
+      console.log('Sitemap: News data received:', newsData);
       
       if (newsData.success && newsData.data && Array.isArray(newsData.data)) {
         // Generar entradas para cada noticia usando el título para el slug

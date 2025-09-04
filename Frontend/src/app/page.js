@@ -1,7 +1,7 @@
 import styles from "./page.module.css";
 import NewsCard from "../components/NewsCard";
 import { getRandomLocalImage } from "../utils/imageUtils";
-import NoticiasPage from "./noticias/page";
+
 
 async function getNews() {
   try {

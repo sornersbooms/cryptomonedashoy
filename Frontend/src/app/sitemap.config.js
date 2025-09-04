@@ -1,6 +1,6 @@
 export const sitemapConfig = {
   baseUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://cryptomonedashoy.com',
-  apiUrl: process.env.API_URL,
+  apiUrl: 'https://cryptomonedashoy-production.up.railway.app',
   staticPages: [
     {
       path: '/',
