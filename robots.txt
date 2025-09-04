@@ -1,0 +1,20 @@
+# Robots.txt para Criptomonedas Hoy
+# https://cryptomonedashoy.com
+
+# Allow access to all crawlers
+User-agent: *
+Allow: /
+
+# Block access to system files
+Disallow: /_next/
+Disallow: /api/
+Disallow: /.env*
+
+# Allow access to important resources
+Allow: /images/
+Allow: /public/
+Allow: /sitemap.xml
+Allow: /robots.txt
+
+# Sitemap
+Sitemap: https://cryptomonedashoy.com/sitemap.xml
