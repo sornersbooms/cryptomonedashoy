@@ -2,18 +2,7 @@ import React from 'react';
 import styles from './style.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
-
-export const slugify = (text) => {
-    return text
-      .toString()
-      .toLowerCase()
-      .replace(/\s+/g, '-') // Replace spaces with -
-      .normalize("NFD").replace(/[̀-ͯ]/g, "") // Normalize and remove diacritics
-    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-      .replace(/\-\-+/g, '-') // Replace multiple - with single -
-      .replace(/^-+/, '') // Trim - from start of text
-      .replace(/-+$/, ''); // Trim - from end of text
-};
+import { slugify } from '../../utils/slugify';
 
 const DEFAULT_IMAGE_URL = '/placeholder.png'; // Assuming you have a placeholder.png in your public directory
 
