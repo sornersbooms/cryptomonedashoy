@@ -7,7 +7,7 @@ import { slugify } from '../../../utils/slugify';
 // Generar las rutas estáticas en el momento del build
 export async function generateStaticParams() {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/news`);
+    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { cache: 'no-store' });
     if (!res.ok) {
       throw new Error('Failed to fetch news for static params');
     }
@@ -29,7 +29,7 @@ export async function generateStaticParams() {
 // Función para obtener una única noticia por su slug
 async function getNoticia(slug) {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/news`);
+    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { cache: 'no-store' });
     if (!res.ok) {
       throw new Error('Failed to fetch news for single item lookup');
     }
