@@ -1,11 +1,12 @@
 import styles from "./page.module.css";
 import NewsCard from "../components/NewsCard";
 import { getRandomLocalImage } from "../utils/imageUtils";
+import { parseContent } from "../utils/contentParser";
 
 
 async function getNews() {
   try {
-    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.API_URL}/api/news`, { cache: 'no-store' });
     if (!res.ok) {
       throw new Error('Failed to fetch data');
     }
@@ -52,14 +53,17 @@ export default async function Home() {
       </aside>
 
       <section className={styles.newsGrid}>
-        {newsData.map((news, index) => (
-          <NewsCard
-            key={index}
-            title={news.title}
-            description={news.summary}
-            imageUrl={getRandomLocalImage()} // Pass a random local image
-          />
-        ))}
+        {newsData.map((news, index) => {
+          const { resumen } = parseContent(news.summary);
+          return (
+            <NewsCard
+              key={index}
+              title={news.title}
+              description={resumen}
+              imageUrl={getRandomLocalImage()} // Pass a random local image
+            />
+          );
+        })}
 
       </section>
 

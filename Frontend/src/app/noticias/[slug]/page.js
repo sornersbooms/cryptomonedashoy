@@ -3,35 +3,7 @@ import { getRandomLocalImage } from '../../../utils/imageUtils';
 import styles from './style.module.css';
 import { slugify } from '../../../utils/slugify';
 
-// Función para parsear el contenido y extraer secciones
-const parseContent = (summary) => {
-  const sections = {};
-  const regex = /\*\*(.*?)\*\*:/g;
-  let match;
-  let lastIndex = 0;
-
-  // Extraer el título principal si existe al principio
-  const titleMatch = summary.match(/^(título:\s*|\*\*titulo\*\*:\s*)/i);
-  if (titleMatch) {
-    summary = summary.substring(titleMatch[0].length).trim();
-  }
-
-  const lines = summary.split(/\*\*(.*?)\*\*:/).map(line => line.trim());
-  lines.shift(); // Remove empty first element
-
-  for (let i = 0; i < lines.length; i += 2) {
-    const key = lines[i].toLowerCase().replace(/ /g, '');
-    const value = lines[i + 1];
-    sections[key] = value;
-  }
-
-  return {
-    resumen: sections.resumen || '',
-    puntosClave: sections.puntosclave || '',
-    comentario: sections.comentario || '',
-    fuente: sections.fuente || '',
-  };
-};
+import { parseContent } from '../../../utils/contentParser';
 
 const getArticleData = async (slug) => {
   try {
