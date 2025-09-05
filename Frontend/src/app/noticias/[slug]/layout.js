@@ -1,7 +1,7 @@
 import { slugify } from '../../../utils/slugify';
 
 async function getNews() {
-  const res = await fetch(`${process.env.API_URL}/api/news`);
+  const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`);
   if (!res.ok) {
     throw new Error('Failed to fetch data');
   }

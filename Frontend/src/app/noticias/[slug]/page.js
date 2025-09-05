@@ -3,9 +3,39 @@ import { getRandomLocalImage } from '../../../utils/imageUtils';
 import styles from './style.module.css';
 import { slugify } from '../../../utils/slugify';
 
+// Función para parsear el contenido y extraer secciones
+const parseContent = (summary) => {
+  const sections = {};
+  const regex = /\*\*(.*?)\*\*:/g;
+  let match;
+  let lastIndex = 0;
+
+  // Extraer el título principal si existe al principio
+  const titleMatch = summary.match(/^(título:\s*|\*\*titulo\*\*:\s*)/i);
+  if (titleMatch) {
+    summary = summary.substring(titleMatch[0].length).trim();
+  }
+
+  const lines = summary.split(/\*\*(.*?)\*\*:/).map(line => line.trim());
+  lines.shift(); // Remove empty first element
+
+  for (let i = 0; i < lines.length; i += 2) {
+    const key = lines[i].toLowerCase().replace(/ /g, '');
+    const value = lines[i + 1];
+    sections[key] = value;
+  }
+
+  return {
+    resumen: sections.resumen || '',
+    puntosClave: sections.puntosclave || '',
+    comentario: sections.comentario || '',
+    fuente: sections.fuente || '',
+  };
+};
+
 const getArticleData = async (slug) => {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/news`);
+    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`);
     if (!res.ok) {
       throw new Error('Failed to fetch news');
     }
@@ -15,16 +45,14 @@ const getArticleData = async (slug) => {
     const newsItem = allNews.find(news => slugify(news.title) === slug);
 
     if (!newsItem) {
-      return null; // O manejar el caso de no encontrado
+      return null;
     }
 
-    // Limpiar el resumen de prefijos no deseados
-    const cleanedSummary = newsItem.summary.replace(/^(título:\s*|\*\*titulo\*\*:\s*)/i, '').trim();
+    const structuredContent = parseContent(newsItem.summary);
 
-    // Asumimos que la API devuelve estos campos. Ajusta según la estructura real.
     return {
       title: newsItem.title,
-      content: cleanedSummary, // Usando el resumen limpiado
+      structuredContent,
       author: newsItem.author || 'Equipo de CryptoMonedasHoy',
       date: new Date(newsItem.published_date).toLocaleDateString('es-ES', {
         year: 'numeric',
@@ -47,6 +75,8 @@ export default async function NewsArticlePage({ params }) {
     return <div>No se encontró la noticia.</div>;
   }
 
+  const { structuredContent } = article;
+
   return (
     <article className={styles.articleContainer}>
       <header className={styles.header}>
@@ -67,10 +97,39 @@ export default async function NewsArticlePage({ params }) {
         />
       </div>
 
-      <div
-        className={styles.content}
-        dangerouslySetInnerHTML={{ __html: article.content }}
-      />
+      <div className={styles.content}>
+        {structuredContent.resumen && (
+          <>
+            <h2>Resumen</h2>
+            <p>{structuredContent.resumen}</p>
+          </>
+        )}
+
+        {structuredContent.puntosClave && (
+          <>
+            <h2>Puntos Clave</h2>
+            <ul>
+              {structuredContent.puntosClave.split('-').map((point, index) => 
+                point.trim() && <li key={index}>{point.trim()}</li>
+              )}
+            </ul>
+          </>
+        )}
+
+        {structuredContent.comentario && (
+          <>
+            <h2>Comentario</h2>
+            <p>{structuredContent.comentario}</p>
+          </>
+        )}
+
+        {structuredContent.fuente && (
+          <>
+            <h3>Fuente</h3>
+            <p>{structuredContent.fuente}</p>
+          </>
+        )}
+      </div>
     </article>
   );
 }
