@@ -72,7 +72,7 @@ export default function RootLayout({ children }) {
     <html lang="es">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="/cryptomonedashoy.png" />
         <link rel="apple-touch-icon" href="/images/bitcoin-7693848_1280.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />

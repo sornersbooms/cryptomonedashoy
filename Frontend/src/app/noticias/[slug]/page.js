@@ -7,7 +7,7 @@ import MarkdownRenderer from '../../../components/MarkdownRenderer';
 
 const getArticleData = async (slug) => {
   try {
-    const res = await fetch(`${process.env.API_URL}/api/news`);
+    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`);
     if (!res.ok) {
       throw new Error('Failed to fetch news');
     }
