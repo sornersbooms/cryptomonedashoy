@@ -3,26 +3,49 @@ import { getRandomLocalImage } from '../../../utils/imageUtils';
 import styles from './style.module.css';
 import { slugify } from '../../../utils/slugify';
 
-// Mock data - en un futuro esto vendrá de una API
 const getArticleData = async (slug) => {
-  // Aquí llamarías a tu API para obtener los datos del artículo
-  // Por ahora, usamos datos de ejemplo
-  return {
-    title: `Noticia sobre ${slug.replace(/-/g, ' ')}`,
-    content: `Contenido detallado sobre ${slug}. Este es un texto de marcador de posición que sería reemplazado por el contenido real del artículo obtenido de una base de datos o un CMS.`,
-    author: 'Equipo de CryptoMonedasHoy',
-    date: new Date().toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }),
-  };
+  try {
+    const res = await fetch(`${process.env.API_URL}/api/news`);
+    if (!res.ok) {
+      throw new Error('Failed to fetch news');
+    }
+    const newsData = await res.json();
+    const allNews = newsData.data;
+
+    const newsItem = allNews.find(news => slugify(news.title) === slug);
+
+    if (!newsItem) {
+      return null; // O manejar el caso de no encontrado
+    }
+
+    // Limpiar el resumen de prefijos no deseados
+    const cleanedSummary = newsItem.summary.replace(/^(título:\s*|\*\*titulo\*\*:\s*)/i, '').trim();
+
+    // Asumimos que la API devuelve estos campos. Ajusta según la estructura real.
+    return {
+      title: newsItem.title,
+      content: cleanedSummary, // Usando el resumen limpiado
+      author: newsItem.author || 'Equipo de CryptoMonedasHoy',
+      date: new Date(newsItem.published_date).toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
+      imageUrl: newsItem.media || getRandomLocalImage(),
+    };
+  } catch (error) {
+    console.error("Error fetching article data:", error);
+    return null;
+  }
 };
 
 export default async function NewsArticlePage({ params }) {
   const { slug } = params;
   const article = await getArticleData(slug);
-  const randomImage = getRandomLocalImage();
+
+  if (!article) {
+    return <div>No se encontró la noticia.</div>;
+  }
 
   return (
     <article className={styles.articleContainer}>
@@ -35,7 +58,7 @@ export default async function NewsArticlePage({ params }) {
 
       <div className={styles.imageContainer}>
         <Image
-          src={randomImage}
+          src={article.imageUrl}
           alt={article.title}
           width={800}
           height={400}

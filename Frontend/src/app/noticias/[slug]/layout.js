@@ -1,4 +1,4 @@
-import { slugify } from '../../../components/NewsCard';
+import { slugify } from '../../../utils/slugify';
 
 async function getNews() {
   const res = await fetch(`${process.env.API_URL}/api/news`);
