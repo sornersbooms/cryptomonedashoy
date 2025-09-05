@@ -2,12 +2,12 @@ import Image from 'next/image';
 import { getRandomLocalImage } from '../../../utils/imageUtils';
 import styles from './style.module.css';
 import { slugify } from '../../../utils/slugify';
-
 import { parseContent } from '../../../utils/contentParser';
+import MarkdownRenderer from '../../../components/MarkdownRenderer';
 
 const getArticleData = async (slug) => {
   try {
-    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`);
+    const res = await fetch(`${process.env.API_URL}/api/news`);
     if (!res.ok) {
       throw new Error('Failed to fetch news');
     }
@@ -73,7 +73,7 @@ export default async function NewsArticlePage({ params }) {
         {structuredContent.resumen && (
           <>
             <h2>Resumen</h2>
-            <p>{structuredContent.resumen}</p>
+            <p><MarkdownRenderer text={structuredContent.resumen} /></p>
           </>
         )}
 
@@ -82,7 +82,7 @@ export default async function NewsArticlePage({ params }) {
             <h2>Puntos Clave</h2>
             <ul>
               {structuredContent.puntosClave.split('-').map((point, index) => 
-                point.trim() && <li key={index}>{point.trim()}</li>
+                point.trim() && <li key={index}><MarkdownRenderer text={point.trim()} /></li>
               )}
             </ul>
           </>
@@ -91,14 +91,14 @@ export default async function NewsArticlePage({ params }) {
         {structuredContent.comentario && (
           <>
             <h2>Comentario</h2>
-            <p>{structuredContent.comentario}</p>
+            <p><MarkdownRenderer text={structuredContent.comentario} /></p>
           </>
         )}
 
         {structuredContent.fuente && (
           <>
             <h3>Fuente</h3>
-            <p>{structuredContent.fuente}</p>
+            <p><MarkdownRenderer text={structuredContent.fuente} /></p>
           </>
         )}
       </div>
