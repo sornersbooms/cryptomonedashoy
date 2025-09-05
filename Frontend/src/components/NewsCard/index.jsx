@@ -4,30 +4,34 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { slugify } from '../../utils/slugify';
 
-const DEFAULT_IMAGE_URL = '/placeholder.png'; // Assuming you have a placeholder.png in your public directory
+const DEFAULT_IMAGE_URL = '/placeholder.png';
 
 const NewsCard = ({ title, description, imageUrl }) => {
-  const newsSlug = slugify(title);
+  // Si no hay título, no renderizamos la tarjeta para evitar errores.
+  if (!title || typeof title !== 'string') {
+    return null;
+  }
 
+  const newsSlug = slugify(title);
   const finalImageUrl = (imageUrl === 'no-photo.jpg' || !imageUrl) ? DEFAULT_IMAGE_URL : imageUrl;
 
   return (
     <Link href={`/noticias/${newsSlug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-        <article className={styles.card}>
+      <article className={styles.card}>
         <div className={styles.imageContainer}>
-            <Image
+          <Image
             src={finalImageUrl}
             alt={`Imagen de la noticia: ${title}`}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             style={{ objectFit: 'cover' }}
-            />
+          />
         </div>
         <div className={styles.content}>
-            <h2 className={styles.title}>{title}</h2>
-            <p className={styles.description}>{description}</p>
+          <h2 className={styles.title}>{title}</h2>
+          <p className={styles.description}>{description}</p>
         </div>
-        </article>
+      </article>
     </Link>
   );
 };
