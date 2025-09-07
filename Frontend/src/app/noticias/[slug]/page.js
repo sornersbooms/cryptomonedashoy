@@ -22,11 +22,13 @@ const getArticleData = async (slug) => {
 
     const structuredContent = parseContent(newsItem.summary);
 
+    const randomDate = new Date(Date.now() - Math.random() * 48 * 60 * 60 * 1000);
+
     return {
       title: newsItem.title,
       structuredContent,
       author: newsItem.author || 'Equipo de CryptoMonedasHoy',
-      date: new Date(newsItem.published_date).toLocaleDateString('es-ES', {
+      date: randomDate.toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
