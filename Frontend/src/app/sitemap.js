@@ -62,36 +62,48 @@ export default async function sitemap() {
 
     if (response.ok) {
       const newsData = await response.json();
-      console.log('Sitemap: News data received:', newsData);
+      console.log('Sitemap: News data received:', newsData); // Re-add this log
       
-      if (newsData.success && newsData.data && Array.isArray(newsData.data)) {
-        // Generar entradas para cada noticia usando el título para el slug
-        const newsPages = newsData.data.map((news) => {
-                    const slug = news.slug;
-          // Si no se puede generar un slug, se omite la entrada para evitar errores
-          if (!slug) {
-            console.error(`No se pudo generar un slug para la noticia con título: ${news.title}`);
-            return null;
+      if (newsData.success) {
+        if (Array.isArray(newsData.data)) {
+          if (newsData.data.length === 0) {
+            throw new Error('[SITEMAP DEBUG] API returned success=true but data array is EMPTY!'); // Force error if empty
           }
-          return {
-            url: `${baseUrl}/noticias/${slug}`,
-            lastModified: new Date(news.createdAt || new Date()),
-            changeFrequency: newsConfig.changeFrequency,
-            priority: newsConfig.priority,
-          };
-        }).filter(Boolean); // Filtrar cualquier entrada nula
-        
-        // Combinar todas las rutas
-        allRoutes = [...allRoutes, ...newsPages];
+          // Generar entradas para cada noticia usando el título para el slug
+          const newsPages = newsData.data.map((news) => {
+            const slug = news.slug;
+            // Si no se puede generar un slug, se omite la entrada para evitar errores
+            if (!slug) {
+              console.error(`No se pudo generar un slug para la noticia con título: ${news.title}`);
+              return null;
+            }
+            return {
+              url: `${baseUrl}/noticias/${slug}`,
+              lastModified: new Date(news.createdAt || new Date()),
+              changeFrequency: newsConfig.changeFrequency,
+              priority: newsConfig.priority,
+            };
+          }).filter(Boolean); // Filtrar cualquier entrada nula
+          
+          // Combinar todas las rutas
+          allRoutes = [...allRoutes, ...newsPages];
+        } else {
+          throw new Error('[SITEMAP DEBUG] API returned success=true but data is NOT an array!'); // Force error if not array
+        }
+      } else {
+        throw new Error(`[SITEMAP DEBUG] API returned success=false. Response: ${JSON.stringify(newsData)}`); // Force error if success=false
       }
+    } else {
+      throw new Error(`[SITEMAP DEBUG] API response not OK. Status: ${response.status}, StatusText: ${response.statusText}`);
     }
   } catch (error) {
     if (error.name === 'AbortError') {
       console.error('Timeout al obtener noticias para el sitemap');
+      throw new Error('[SITEMAP DEBUG] Timeout al obtener noticias para el sitemap'); // Re-throw for build failure
     } else {
       console.error('Error al obtener noticias para el sitemap:', error);
+      throw new Error(`[SITEMAP DEBUG] Error general al obtener noticias para el sitemap: ${error.message}`); // Re-throw for build failure
     }
-    // En producción, podrías querer loggear esto a un servicio de monitoreo
   }
   
   // Devolver todas las rutas
