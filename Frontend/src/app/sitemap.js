@@ -36,7 +36,15 @@ export default async function sitemap() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), api.timeout);
 
-    const fullApiUrl = `${apiUrl}${api.endpoints.news}`;
+        const fullApiUrl = `${apiUrl}${api.endpoints.news}`;
+    
+    // --- DEBUGGING LOGS ---
+    console.log('[SITEMAP DEBUG] Trying to generate sitemap...');
+    console.log(`[SITEMAP DEBUG] INTERNAL_API_URL: ${process.env.INTERNAL_API_URL}`);
+    console.log(`[SITEMAP DEBUG] NEXT_PUBLIC_API_URL: ${process.env.NEXT_PUBLIC_API_URL}`);
+    console.log(`[SITEMAP DEBUG] Final API URL used: ${fullApiUrl}`);
+    // --- END DEBUGGING LOGS ---
+
     console.log(`Sitemap: Fetching news from: ${fullApiUrl}`);
 
     // Obtener todas las noticias desde la API
