@@ -1,10 +1,10 @@
+/* Existing styles */
 .header {
-  background-color: #fff;
+  background-color: #f8f8f8;
+  padding: 1rem 1.5rem;
   border-bottom: 1px solid #eaeaea;
-  padding: 1rem 2rem;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative; /* Added for mobile menu positioning */
 }
 
 .nav {
@@ -16,91 +16,85 @@
 }
 
 .logo {
-  font-size: 1.0rem;
-  font-weight: bold;
+  font-family: 'Oswald', sans-serif; /* Apply Oswald directly */
+  font-size: 1.2rem; /* Adjusted for Oswald font */
+  font-weight: 700; /* Oswald has 700 weight */
+  color: #333; /* Default color for "CryptoMonedas" */
   text-decoration: none;
-  color: #000;
-  background-color: orange;
-  padding: 7px;
-  border-radius: 8px
+  display: flex; /* To keep "CryptoMonedas" and "Hoy" on the same line */
+  align-items: baseline; /* Align text baselines */
+}
+
+.logo .hoy {
+  color: var(--accent-color); /* Orange color for "Hoy" */
+  margin-left: 0.2em; /* Small space between words */
 }
 
 .navLinks {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .navLinks a {
+  color: #555;
   text-decoration: none;
-  color: #333;
   font-size: 1rem;
+  font-weight: 500;
   transition: color 0.2s ease-in-out;
 }
 
 .navLinks a:hover {
-  color: orange;
+  color: #000;
 }
 
 .hamburgerBtn {
-  display: none;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 2rem;
-  height: 2rem;
-  background: transparent;
+  display: none; /* Hidden on desktop */
+  background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
-  z-index: 10;
+  padding: 0.5rem;
 }
 
-.hamburgerBtn .bar {
-  width: 2rem;
-  height: 0.25rem;
+.bar {
+  display: block;
+  width: 25px;
+  height: 3px;
   background-color: #333;
-  border-radius: 10px;
-  transition: all 0.3s linear;
-  position: relative;
-  transform-origin: 1px;
+  margin: 5px 0;
+  transition: all 0.3s ease-in-out;
 }
 
 .mobileMenu {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f8f8;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 1rem 1.5rem;
+  z-index: 9999; /* Increased z-index */
 }
 
-/* Responsive Styles */
+.mobileMenu a {
+  padding: 0.8rem 0;
+  color: #555;
+  text-decoration: none;
+  border-bottom: 1px solid #eee;
+}
+
+.mobileMenu a:last-child {
+  border-bottom: none;
+}
+
+/* Media queries for responsiveness */
 @media (max-width: 768px) {
   .navLinks {
-    display: none;
+    display: none; /* Hide nav links on mobile */
   }
 
   .hamburgerBtn {
-    display: flex;
-  }
-
-  .mobileMenu {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: white;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    padding: 1rem 0;
-    border-bottom: 1px solid #eaeaea;
-  }
-
-  .mobileMenu a {
-    padding: 1rem;
-    width: 100%;
-    text-align: center;
-    text-decoration: none;
-    color: #333;
-    font-size: 1.2rem;
-  }
-    
-  .mobileMenu a:hover {
-    background-color: #f0f0f0;
+    display: block; /* Show hamburger on mobile */
   }
 }

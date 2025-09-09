@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap'); /* Import Lato */
 
 :root {
   --color-white: #FFFFFF;
@@ -28,7 +28,7 @@ html {
 }
 
 body {
-  font-family: 'Roboto', sans-serif; /* Using Roboto for Material UI feel */
+  font-family: 'Lato', sans-serif; /* Use Lato as default */
   background-color: var(--background-color);
   color: var(--text-color);
   line-height: 1.6;
@@ -83,7 +83,7 @@ a {
 }
 
 a:hover {
-  color: darken(var(--accent-color), 10%); /* This won't work directly in CSS, but conceptually */
+  /* This won't work directly in CSS, but conceptually */
   opacity: 0.8;
 }
 

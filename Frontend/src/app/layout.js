@@ -1,6 +1,13 @@
 import "./globals.css";
 import Header from "../components/Header";
 import { siteConfig } from "./metadata";
+// REMOVE: import { Poppins, Lato } from '@next/font/google';
+
+// REMOVE: Define Poppins font for the logo
+// REMOVE: const poppins = Poppins({...});
+
+// REMOVE: Define Lato font for general text
+// REMOVE: const lato = Lato({...});
 
 export const metadata = {
   title: {
@@ -69,8 +76,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es">
+    <html lang="es"> {/* REMOVE: className={`${lato.variable} ${poppins.variable}`} */}
       <head>
+        {/* ADD: Traditional Google Fonts link */}
+        <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" type="image/x-icon" href="/cryptomonedashoy.png" />
         <link rel="apple-touch-icon" href="/images/bitcoin-7693848_1280.png" />
@@ -79,7 +88,7 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-title" content="CriptoHoy" />
       </head>
       <body>
-        <Header />
+        <Header /> {/* REMOVE: poppinsFont={poppins} */}
         {children}
       </body>
     </html>

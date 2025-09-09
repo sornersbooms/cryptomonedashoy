@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import styles from './style.module.css';
 
+// REMOVE: poppinsFont as a prop
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -14,15 +15,14 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <nav className={styles.nav}>
+        {/* REMOVE: poppinsFont.className */}
         <Link href="/" className={styles.logo}>
-          CryptoMonedasHoy
+          <span>CryptoMonedas</span><span className={styles.hoy}>Hoy</span>
         </Link>
 
         <div className={styles.navLinks}>
           <Link href="/aprende">Aprende</Link>
           <Link href="/noticias">Noticias</Link>
-          
-          
         </div>
 
         <button className={styles.hamburgerBtn} onClick={toggleMenu}>
@@ -36,7 +36,6 @@ export default function Header() {
         <div className={styles.mobileMenu}>
           <Link href="/noticias" onClick={toggleMenu}>Noticias</Link>
           <Link href="/aprende" onClick={toggleMenu}>Aprende</Link>
-         
         </div>
       )}
     </header>
