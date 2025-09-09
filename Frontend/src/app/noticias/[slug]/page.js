@@ -5,7 +5,8 @@ import { getRandomLocalImage } from '../../../utils/imageUtils';
 
 const getArticleData = async (slug) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news/${slug}`);
+        const apiUrl = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL;
+    const res = await fetch(`${apiUrl}/news/${slug}`);
     if (!res.ok) { return null; }
     const newsData = await res.json();
     const article = newsData.data;
