@@ -35,7 +35,7 @@ export const sitemapConfig = {
     timeout: 20000, // 20 segundos
     retries: 3,
     endpoints: {
-      news: '/api/news',
+      news: '/news', // Corregido: ya no empieza con /api
     },
   },
 };
