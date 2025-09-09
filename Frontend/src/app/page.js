@@ -4,8 +4,7 @@ import { getRandomLocalImage } from "../utils/imageUtils"; // Re-add the import
 
 async function getNews() {
   try {
-        const apiUrl = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL;
-    const res = await fetch(`${apiUrl}/news`, { cache: 'no-store' });
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news`, { cache: 'no-store' });
     if (!res.ok) {
       throw new Error('Failed to fetch data');
     }
