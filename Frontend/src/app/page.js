@@ -1,20 +1,18 @@
 import styles from "./page.module.css";
 import NewsCard from "../components/NewsCard";
-import { getRandomLocalImage } from "../utils/imageUtils";
-import { parseContent } from "../utils/contentParser";
-
+import { getRandomLocalImage } from "../utils/imageUtils"; // Re-add the import
 
 async function getNews() {
   try {
-    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news`, { cache: 'no-store' });
     if (!res.ok) {
       throw new Error('Failed to fetch data');
     }
     const data = await res.json();
-    return data.data; // Aseguramos devolver el array
+    return data.data;
   } catch (error) {
     console.error("Error fetching news:", error);
-    return []; // Devolvemos un array vacío en caso de error
+    return [];
   }
 }
 
@@ -37,7 +35,6 @@ export default async function Home() {
   const newsData = await getNews();
 
   if (!newsData || !Array.isArray(newsData)) {
-    console.error("newsData is not an array or is null:", newsData);
     return <div>No se pudieron cargar las noticias.</div>;
   }
 
@@ -53,18 +50,15 @@ export default async function Home() {
       </aside>
 
       <section className={styles.newsGrid}>
-        {newsData.map((news, index) => {
-          const { resumen } = parseContent(news.summary);
-          return (
-            <NewsCard
-              key={index}
-              title={news.title}
-              description={resumen}
-              imageUrl={getRandomLocalImage()} // Pass a random local image
-            />
-          );
-        })}
-
+        {newsData.map((news) => (
+          <NewsCard
+            key={news.slug}
+            slug={news.slug}
+            title={news.seoTitle}
+            description={news.metaDescription}
+            imageUrl={getRandomLocalImage()} // Use the random local image
+          />
+        ))}
       </section>
 
       <aside className={styles.rightSidebar}>

@@ -1,45 +1,56 @@
 import Image from 'next/image';
-import { getRandomLocalImage } from '../../../utils/imageUtils';
 import styles from './style.module.css';
-import { slugify } from '../../../utils/slugify';
-import { parseContent } from '../../../utils/contentParser';
 import MarkdownRenderer from '../../../components/MarkdownRenderer';
+import { getRandomLocalImage } from '../../../utils/imageUtils';
 
 const getArticleData = async (slug) => {
   try {
-    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`);
-    if (!res.ok) {
-      throw new Error('Failed to fetch news');
-    }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news/${slug}`);
+    if (!res.ok) { return null; }
     const newsData = await res.json();
-    const allNews = newsData.data;
+    const article = newsData.data;
 
-    const newsItem = allNews.find(news => slugify(news.title) === slug);
-
-    if (!newsItem) {
-      return null;
+    if (article) {
+      const relativeImagePath = getRandomLocalImage();
+      // For the <Image> component, we need the relative path.
+      article.displayImage = relativeImagePath;
+      // For OpenGraph (social sharing), we need the full, absolute URL.
+      article.ogImage = `${process.env.NEXT_PUBLIC_SITE_URL}${relativeImagePath}`;
     }
-
-    const structuredContent = parseContent(newsItem.summary);
-
-    const randomDate = new Date(Date.now() - Math.random() * 48 * 60 * 60 * 1000);
-
-    return {
-      title: newsItem.title,
-      structuredContent,
-      author: newsItem.author || 'Equipo de CryptoMonedasHoy',
-      date: randomDate.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      }),
-      imageUrl: newsItem.media || getRandomLocalImage(),
-    };
+    return article;
   } catch (error) {
     console.error("Error fetching article data:", error);
     return null;
   }
 };
+
+export async function generateMetadata({ params }) {
+  const article = await getArticleData(params.slug);
+
+  if (!article) {
+    return { title: 'Noticia no encontrada' };
+  }
+
+  return {
+    title: article.seoTitle,
+    description: article.metaDescription,
+    keywords: article.keywords || [],
+    openGraph: {
+      title: article.seoTitle,
+      description: article.metaDescription,
+      images: [
+        {
+          url: article.ogImage, // Use the absolute URL for social media
+          width: 1200, // Typical OG image width
+          height: 630, // Typical OG image height
+          alt: article.imageAltText,
+        },
+      ],
+      locale: 'es_ES',
+      type: 'article',
+    },
+  };
+}
 
 export default async function NewsArticlePage({ params }) {
   const { slug } = params;
@@ -49,61 +60,46 @@ export default async function NewsArticlePage({ params }) {
     return <div>No se encontró la noticia.</div>;
   }
 
-  const { structuredContent } = article;
+  const structuredDataScript = { __html: article.structuredData };
 
   return (
-    <article className={styles.articleContainer}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>{article.title}</h1>
-        <p className={styles.meta}>
-          Por {article.author} | Publicado el {article.date}
-        </p>
-      </header>
-
-      <div className={styles.imageContainer}>
-        <Image
-          src={article.imageUrl}
-          alt={article.title}
-          width={800}
-          height={400}
-          className={styles.image}
-          priority
-        />
-      </div>
-
-      <div className={styles.content}>
-        {structuredContent.resumen && (
-          <>
-            <h2>Resumen</h2>
-            <p><MarkdownRenderer text={structuredContent.resumen} /></p>
-          </>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={structuredDataScript}
+        key="news-article-jsonld"
+      />
+      <article className={styles.articleContainer}>
+        <header className={styles.header}>
+          <h1 className={styles.title}>{article.seoTitle}</h1>
+          <p className={styles.meta}>
+            Publicado el {new Date(article.createdAt).toLocaleDateString('es-ES', {
+              year: 'numeric', month: 'long', day: 'numeric',
+            })}
+          </p>
+        </header>
+        <div className={styles.imageContainer}>
+          <Image
+            src={article.displayImage} // Use the relative path for the component
+            alt={article.imageAltText}
+            width={800}
+            height={400}
+            className={styles.image}
+            priority
+          />
+        </div>
+        <div className={styles.content}>
+          <MarkdownRenderer text={article.articleBody} />
+        </div>
+        {article.keywords && article.keywords.length > 0 && (
+          <div className={styles.keywordsContainer}>
+            <strong>Etiquetas:</strong>
+            {article.keywords.map(keyword => (
+              <span key={keyword} className={styles.keyword}>{keyword}</span>
+            ))}
+          </div>
         )}
-
-        {structuredContent.puntosClave && (
-          <>
-            <h2>Puntos Clave</h2>
-            <ul>
-              {structuredContent.puntosClave.split('-').map((point, index) => 
-                point.trim() && <li key={index}><MarkdownRenderer text={point.trim()} /></li>
-              )}
-            </ul>
-          </>
-        )}
-
-        {structuredContent.comentario && (
-          <>
-            <h2>Comentario</h2>
-            <p><MarkdownRenderer text={structuredContent.comentario} /></p>
-          </>
-        )}
-
-        {structuredContent.fuente && (
-          <>
-            <h3>Fuente</h3>
-            <p><MarkdownRenderer text={structuredContent.fuente} /></p>
-          </>
-        )}
-      </div>
-    </article>
+      </article>
+    </>
   );
 }

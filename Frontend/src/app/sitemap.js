@@ -59,7 +59,7 @@ export default async function sitemap() {
       if (newsData.success && newsData.data && Array.isArray(newsData.data)) {
         // Generar entradas para cada noticia usando el título para el slug
         const newsPages = newsData.data.map((news) => {
-          const slug = slugify(news.title);
+                    const slug = news.slug;
           // Si no se puede generar un slug, se omite la entrada para evitar errores
           if (!slug) {
             console.error(`No se pudo generar un slug para la noticia con título: ${news.title}`);

@@ -1,55 +1,38 @@
-import React from 'react';
 import NewsCard from '../../components/NewsCard';
-import styles from './noticias.module.css';
 import { getRandomLocalImage } from '../../utils/imageUtils';
+import styles from './noticias.module.css';
 
 async function getNews() {
   try {
-    const res = await fetch(`https://cryptomonedashoy-production.up.railway.app/api/news`, { next: { revalidate: 3600 } }); // Revalida cada hora
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news`, { cache: 'no-store' });
     if (!res.ok) {
-      throw new Error('Failed to fetch news');
+      throw new Error('Failed to fetch data');
     }
-    const { data } = await res.json();
-    return data;
+    const data = await res.json();
+    return data.data;
   } catch (error) {
     console.error("Error fetching news:", error);
-    return []; // Devuelve un array vacío en caso de error
+    return [];
   }
 }
 
-// Función para obtener el resumen del texto
-const getSummary = (text) => {
-  if (!text) return '';
-  const match = text.match(/\*\*Resumen\*\*:\s*([^]*?)(?=\*\*|$)/i);
-  if (match && match[1]) {
-    const summaryText = match[1].trim().replace(/\n/g, ' ');
-    return summaryText.length > 100 ? summaryText.substring(0, 97) + '...' : summaryText;
-  }
-  const cleanText = text.replace(/\*\*/g, '').replace(/\n/g, ' ');
-  return cleanText.length > 100 ? cleanText.substring(0, 97) + '...' : cleanText;
-};
-
 export default async function NoticiasPage() {
-  const news = await getNews();
-  const latestNews = news.slice(0, 20);
+  const newsData = await getNews();
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.pageTitle}>Últimas Noticias</h1>
-      {latestNews.length > 0 ? (
-        <div className={styles.newsGrid}>
-          {latestNews.map((item) => (
-            <NewsCard
-              key={item._id || item.title} // Usar _id si está disponible, si no, el título
-              title={item.title}
-              description={getSummary(item.summary)}
-              imageUrl={getRandomLocalImage()} // Usar imagen aleatoria local
-            />
-          ))}
-        </div>
-      ) : (
-        <p style={{ textAlign: 'center' }}>No se encontraron noticias en este momento.</p>
-      ) }
+    <div className={styles.pageContainer}>
+      <h1 className={styles.title}>Todas las Noticias</h1>
+      <section className={styles.newsGrid}>
+        {newsData.map((news) => (
+          <NewsCard
+            key={news.slug}
+            slug={news.slug}
+            title={news.seoTitle}
+            description={news.metaDescription}
+            imageUrl={getRandomLocalImage()} // Using random local images as on the homepage
+          />
+        ))}
+      </section>
     </div>
   );
 }
