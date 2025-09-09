@@ -32,7 +32,7 @@ export const sitemapConfig = {
   },
   // Configuración de la API
   api: {
-    timeout: 5000, // 5 segundos
+    timeout: 20000, // 20 segundos
     retries: 3,
     endpoints: {
       news: '/api/news',
