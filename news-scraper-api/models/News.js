@@ -13,6 +13,7 @@ const NewsSchema = new mongoose.Schema({
     required: [true, 'Please add a URL'],
     unique: true
   },
+  //gracias
   imageUrl: {
     type: String
   },
