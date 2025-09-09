@@ -26,15 +26,15 @@ const news = require('./routes/newsRoutes');
 app.use('/api/news', news);
 
 // --- Schedule the scraper task ---
-// This will run every day at 8:00 AM, Argentina time.
-cron.schedule('0 8 * * *', () => {
+// This will run every day at 1:40 PM, Bogota time.
+cron.schedule('45 13 * * *', () => {
   console.log('⏰ Running scheduled job: Scraping daily news...');
   scrapeNews().catch(err => {
     console.error('Error during scheduled scrape:', err);
   });
 }, {
   scheduled: true,
-  timezone: "America/Argentina/Buenos_Aires"
+  timezone: "America/Bogota"
 });
 
 
@@ -42,5 +42,5 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-  console.log('📰 News scraper scheduled to run daily at 8:00 AM.');
+  console.log('📰 News scraper scheduled to run daily at 1:40 PM.');
 });
