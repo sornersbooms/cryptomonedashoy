@@ -27,7 +27,7 @@ app.use('/api/news', news);
 
 // --- Schedule the scraper task ---
 // This will run every day at 1:40 PM, Bogota time.
-cron.schedule('54 13 * * *', () => {
+cron.schedule('02 14 * * *', () => {
   console.log('⏰ Running scheduled job: Scraping daily news...');
   scrapeNews().catch(err => {
     console.error('Error during scheduled scrape:', err);
