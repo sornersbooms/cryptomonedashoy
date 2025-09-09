@@ -16,6 +16,7 @@ const getAprendeRoutes = () =>
     );
 
 export default async function sitemap() {
+  throw new Error('[SITEMAP DEBUG] ¡El archivo sitemap.js SÍ se está ejecutando!');
   const { baseUrl, apiUrl, staticPages, newsConfig, revalidateTime, api } = sitemapConfig;
   
   // Generar páginas estáticas
