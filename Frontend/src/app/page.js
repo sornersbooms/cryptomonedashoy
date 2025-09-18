@@ -4,9 +4,13 @@ import Link from 'next/link'; // Importar Link
 
 // --- OBTENER DATOS --- 
 async function getNews() {
+  console.log("DEBUG: API_URL en getNews:", process.env.API_URL);
   try {
     const res = await fetch(`${process.env.API_URL}/api/news`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Failed to fetch news');
+    if (!res.ok) {
+      console.error("DEBUG: Error al obtener noticias. Estado de la respuesta:", res.status);
+      throw new Error('Failed to fetch news');
+    }
     return (await res.json()).data;
   } catch (error) {
     console.error("Error fetching news:", error);

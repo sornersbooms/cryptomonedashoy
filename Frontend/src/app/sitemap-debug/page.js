@@ -63,7 +63,7 @@ export default async function SitemapDebugPage() {
           </div>
           <div className={styles.statItem}>
             <div className={styles.statLabel}>API URL</div>
-            <div className={styles.statValue}>http://localhost:5000</div>
+            <div className={styles.statValue}>{process.env.API_URL || 'API_URL no configurada'}</div>
           </div>
           <div className={styles.statItem}>
             <div className={styles.statLabel}>Revalidación</div>

@@ -31,7 +31,13 @@ connectDB();
 const app = express();
 
 // CORS middleware
-app.use(cors());
+const corsOptions = {
+  origin: 'https://cryptomonedas.com', // Reemplaza con el dominio real de tu frontend
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // Si necesitas enviar cookies o encabezados de autorización
+  optionsSuccessStatus: 204
+};
+app.use(cors(corsOptions));
 
 // Body parser
 app.use(express.json());
