@@ -16,22 +16,10 @@ router.route('/').get(async (req, res) => {
     // Use .lean() for faster queries and easier object manipulation
     const newsArticles = await News.find(query).lean().sort({ createdAt: -1 });
 
-    // Inject random local images if available
-    let dataWithLocalImages = newsArticles;
-    if (localImages && localImages.length > 0) {
-      dataWithLocalImages = newsArticles.map(article => {
-        const randomImage = localImages[Math.floor(Math.random() * localImages.length)];
-        return {
-          ...article,
-          imageUrl: randomImage // Override the original imageUrl
-        };
-      });
-    }
-
     res.status(200).json({
       success: true,
-      count: dataWithLocalImages.length,
-      data: dataWithLocalImages
+      count: newsArticles.length,
+      data: newsArticles
     });
   } catch (err) {
     res.status(400).json({

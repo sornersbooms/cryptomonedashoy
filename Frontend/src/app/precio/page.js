@@ -18,7 +18,10 @@ const formatLargeNumber = (value) => {
 async function getMarketData() {
   try {
     const res = await fetch(`${process.env.API_URL}/api/cryptos/list`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Failed to fetch market data');
+    if (!res.ok) {
+      console.error("DEBUG: Error al obtener datos del mercado. Estado de la respuesta:", res.status);
+      throw new Error('Failed to fetch market data');
+    }
     return await res.json();
   } catch (error) {
     console.error("Error fetching market data:", error);
