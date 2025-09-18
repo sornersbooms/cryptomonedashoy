@@ -18,7 +18,7 @@ const getAprendeRoutes = () =>
 // Función para obtener todas las rutas de criptomonedas
 const getCryptoPriceRoutes = async () => {
   try {
-    const res = await fetch('http://localhost:5000/api/cryptos/list');
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/list`);
     if (!res.ok) {
       throw new Error(`Failed to fetch crypto list for sitemap: ${res.statusText}`);
     }
@@ -38,7 +38,7 @@ const getCryptoPriceRoutes = async () => {
 // Función para obtener las nuevas rutas dinámicas de /aprende/que-es/[cryptoId] y /aprende/como-funciona/[cryptoId]
 const getDynamicAprendeRoutes = async () => {
   try {
-    const res = await fetch('http://localhost:5000/api/cryptos/list');
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/list`);
     if (!res.ok) {
       throw new Error(`Failed to fetch crypto list for dynamic aprende routes: ${res.statusText}`);
     }

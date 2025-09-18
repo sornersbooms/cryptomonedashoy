@@ -9,7 +9,7 @@ import NewsFeed from '@/components/NewsFeed';
 // Esta función se ejecuta en el servidor durante el build
 export async function generateStaticParams() {
   try {
-    const res = await fetch('http://localhost:5000/api/cryptos/list');
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/list`);
     if (!res.ok) {
       throw new Error(`Failed to fetch crypto list: ${res.statusText}`);
     }
@@ -24,7 +24,7 @@ export async function generateStaticParams() {
 // Función para obtener los datos de una cripto específica
 async function getCryptoData(slug) {
   try {
-    const res = await fetch(`http://localhost:5000/api/cryptos/details/${slug}?tickers=true&market_data=true&vs_currencies=usd,eur,cop`);
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/details/${slug}?tickers=true&market_data=true&vs_currencies=usd,eur,cop`);
     if (!res.ok) {
       throw new Error('Failed to fetch crypto data');
     }

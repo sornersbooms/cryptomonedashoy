@@ -5,7 +5,7 @@ import styles from './page.module.css';
 // Generar las 100 páginas estáticas
 export async function generateStaticParams() {
   try {
-    const res = await fetch('http://localhost:5000/api/cryptos/list');
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/list`);
     if (!res.ok) throw new Error('Failed to fetch crypto list');
     const cryptos = await res.json();
     return cryptos.map((crypto) => ({ slug: crypto.id }));
@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 // Obtener los datos de la cripto
 async function getCryptoData(slug) {
   try {
-    const res = await fetch(`http://localhost:5000/api/cryptos/details/${slug}`);
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/details/${slug}`);
     if (!res.ok) throw new Error('Failed to fetch crypto data');
     return res.json();
   } catch (error) {

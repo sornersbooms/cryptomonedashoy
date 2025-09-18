@@ -5,7 +5,7 @@ import Link from 'next/link'; // Importar Link
 // --- OBTENER DATOS --- 
 async function getNews() {
   try {
-    const res = await fetch(`http://localhost:5000/api/news`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.API_URL}/api/news`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch news');
     return (await res.json()).data;
   } catch (error) {
@@ -16,7 +16,7 @@ async function getNews() {
 
 async function getTrending() {
   try {
-    const res = await fetch(`http://localhost:5000/api/cryptos/trending`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/trending`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch trending data');
     return await res.json();
   } catch (error) {
@@ -27,7 +27,7 @@ async function getTrending() {
 
 async function getCategories() {
   try {
-    const res = await fetch(`http://localhost:5000/api/cryptos/categories`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/categories`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch categories');
     return await res.json();
   } catch (error) {

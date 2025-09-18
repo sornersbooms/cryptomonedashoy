@@ -36,7 +36,7 @@ const CryptoChart = ({ cryptoId }) => {
     const fetchData = async () => {
       try {
         setError(null);
-        const res = await fetch(`http://localhost:5000/api/cryptos/chart/${cryptoId}?days=${days}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cryptos/chart/${cryptoId}?days=${days}`);
         if (!res.ok) {
           throw new Error(`Failed to fetch chart data: ${res.statusText}`);
         }

@@ -17,7 +17,7 @@ const formatLargeNumber = (value) => {
 
 async function getMarketData() {
   try {
-    const res = await fetch('http://localhost:5000/api/cryptos/list', { cache: 'no-store' });
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/list`, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch market data');
     return await res.json();
   } catch (error) {

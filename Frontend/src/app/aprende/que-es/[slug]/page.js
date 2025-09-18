@@ -5,7 +5,7 @@ import styles from './page.module.css';
 // Reutilizamos la misma lógica que en las páginas de precios para generar las páginas
 export async function generateStaticParams() {
   try {
-    const res = await fetch('http://localhost:5000/api/cryptos/list');
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/list`);
     if (!res.ok) throw new Error('Failed to fetch crypto list');
     const cryptos = await res.json();
     return cryptos.map((crypto) => ({ slug: crypto.id }));
@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 // Reutilizamos la función para obtener los datos
 async function getCryptoData(slug) {
   try {
-    const res = await fetch(`http://localhost:5000/api/cryptos/details/${slug}`);
+    const res = await fetch(`${process.env.API_URL}/api/cryptos/details/${slug}`);
     if (!res.ok) throw new Error('Failed to fetch crypto data');
     return res.json();
   } catch (error) {
