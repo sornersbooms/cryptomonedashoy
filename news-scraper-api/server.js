@@ -8,18 +8,8 @@ const cors = require('cors');
 const scrapeNews = require('./scripts/puppeteerScraper');
 
 // --- Cargar imágenes locales al iniciar ---
-let localImages = [];
-const imagesDirectory = path.join(__dirname, '..', 'Frontend', 'public', 'images');
-
-try {
-  const allFiles = fs.readdirSync(imagesDirectory);
-  localImages = allFiles.filter(file => /\.(jpg|jpeg|png|gif)$/i.test(file)).map(file => `/images/${file}`);
-  console.log(`🖼️  Found and loaded ${localImages.length} local images.`);
-} catch (err) {
-  console.error("❌ Could not read local images directory:", err);
-}
-// Exportar para que las rutas puedan usarlo
-module.exports.localImages = localImages;
+// Eliminada la lógica de carga de imágenes locales del backend
+// El frontend ahora maneja sus propias imágenes locales
 // ----------------------------------------
 
 // Load env vars using an absolute path
