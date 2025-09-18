@@ -22,6 +22,7 @@ router.route('/').get(async (req, res) => {
       data: newsArticles
     });
   } catch (err) {
+    console.error("Error fetching news from DB:", err); // <-- Modificación aquí
     res.status(400).json({
       success: false,
       error: err.message

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const CryptoCacheSchema = new mongoose.Schema({
-  key: {
+  cryptoId: {
     type: String,
     required: true,
     unique: true,
@@ -10,10 +10,10 @@ const CryptoCacheSchema = new mongoose.Schema({
     type: Object,
     required: true,
   },
-  cachedAt: {
+  createdAt: {
     type: Date,
     default: Date.now,
-    expires: 300, // Documentos expiran después de 300 segundos (5 minutos)
+    expires: '10m', // Los datos en caché expirarán después de 10 minutos
   },
 });
 
