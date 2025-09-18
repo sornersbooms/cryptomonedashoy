@@ -4,7 +4,7 @@ import styles from './noticias.module.css';
 
 async function getNews() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news`, { cache: 'no-store' });
+    const res = await fetch(`${process.env.API_URL}/news`, { cache: 'no-store' });
     if (!res.ok) {
       throw new Error('Failed to fetch data');
     }

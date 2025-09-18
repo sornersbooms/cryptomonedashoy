@@ -5,7 +5,7 @@ import { getRandomLocalImage } from '../../../utils/imageUtils';
 
 const getArticleData = async (slug) => {
   try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news/${slug}`);
+            const res = await fetch(`${process.env.API_URL}/news/${slug}`);
     if (!res.ok) { return null; }
     const newsData = await res.json();
     const article = newsData.data;
@@ -15,7 +15,7 @@ const getArticleData = async (slug) => {
       // For the <Image> component, we need the relative path.
       article.displayImage = relativeImagePath;
       // For OpenGraph (social sharing), we need the full, absolute URL.
-      article.ogImage = `${process.env.NEXT_PUBLIC_SITE_URL}${relativeImagePath}`;
+      article.ogImage = `${process.env.API_URL}${relativeImagePath}`;
     }
     return article;
   } catch (error) {
