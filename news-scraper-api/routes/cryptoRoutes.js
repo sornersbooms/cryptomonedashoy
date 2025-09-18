@@ -18,7 +18,7 @@ router.get('/list', async (req, res) => {
     res.json(data);
   } catch (error) {
     console.error('Error fetching crypto list from CoinGecko:', error);
-    res.status(500).json({ message: 'Error fetching crypto list' });
+    res.status(500).json({ message: 'Error fetching crypto list', error: error.message });
   }
 });
 
@@ -35,7 +35,7 @@ router.get('/details/:id', async (req, res) => {
     res.json(data);
   } catch (error) {
     console.error(`Error fetching crypto details for ${req.params.id} from CoinGecko:`, error);
-    res.status(500).json({ message: 'Error fetching crypto details' });
+    res.status(500).json({ message: 'Error fetching crypto details', error: error.message });
   }
 });
 
@@ -53,7 +53,7 @@ router.get('/chart/:id', async (req, res) => {
     res.json(data);
   } catch (error) {
     console.error(`Error fetching market chart for ${req.params.id} from CoinGecko:`, error);
-    res.status(500).json({ message: 'Error fetching market chart' });
+    res.status(500).json({ message: 'Error fetching market chart', error: error.message });
   }
 });
 
@@ -64,7 +64,7 @@ router.get('/trending', async (req, res) => {
     res.json(response.coins); // Devuelve solo el array de monedas
   } catch (error) {
     console.error('Error fetching trending cryptos from CoinGecko:', error);
-    res.status(500).json({ message: 'Error fetching trending cryptos' });
+    res.status(500).json({ message: 'Error fetching trending cryptos', error: error.message });
   }
 });
 
@@ -75,7 +75,7 @@ router.get('/categories', async (req, res) => {
     res.json(response);
   } catch (error) {
     console.error('Error fetching categories from CoinGecko:', error);
-    res.status(500).json({ message: 'Error fetching categories' });
+    res.status(500).json({ message: 'Error fetching categories', error: error.message });
   }
 });
 
