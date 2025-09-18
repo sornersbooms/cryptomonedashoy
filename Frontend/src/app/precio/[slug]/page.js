@@ -26,6 +26,7 @@ async function getCryptoData(slug) {
   try {
     const res = await fetch(`${process.env.API_URL}/api/cryptos/details/${slug}?tickers=true&market_data=true&vs_currencies=usd,eur,cop`);
     if (!res.ok) {
+      console.error(`DEBUG: Error al obtener datos de ${slug}. Estado de la respuesta:`, res.status);
       throw new Error('Failed to fetch crypto data');
     }
     return res.json();
