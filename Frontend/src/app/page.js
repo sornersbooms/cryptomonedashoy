@@ -1,50 +1,57 @@
 import styles from "./page.module.css";
 import NewsCard from "../components/NewsCard";
-import { getRandomLocalImage } from "../utils/imageUtils"; // Re-add the import
+import Link from 'next/link'; // Importar Link
 
+// --- OBTENER DATOS --- 
 async function getNews() {
   try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news`, { cache: 'no-store' });
-    if (!res.ok) {
-      throw new Error('Failed to fetch data');
-    }
-    const data = await res.json();
-    return data.data;
+    const res = await fetch(`http://localhost:5000/api/news`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to fetch news');
+    return (await res.json()).data;
   } catch (error) {
     console.error("Error fetching news:", error);
     return [];
   }
 }
 
-const categoriesData = [
-  "DeFi",
-  "NFTs",
-  "Metaverso",
-  "Web3",
-  "Altcoins",
-];
-
-const trendsData = [
-  { name: "Bitcoin", change: "+5.2%" },
-  { name: "Ethereum", change: "+3.8%" },
-  { name: "Solana", change: "-2.1%" },
-  { name: "Cardano", change: "+1.5%" },
-];
-
-export default async function Home() {
-  const newsData = await getNews();
-
-  if (!newsData || !Array.isArray(newsData)) {
-    return <div>No se pudieron cargar las noticias.</div>;
+async function getTrending() {
+  try {
+    const res = await fetch(`http://localhost:5000/api/cryptos/trending`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to fetch trending data');
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching trending:", error);
+    return [];
   }
+}
+
+async function getCategories() {
+  try {
+    const res = await fetch(`http://localhost:5000/api/cryptos/categories`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to fetch categories');
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+}
+
+// --- COMPONENTE PRINCIPAL ---
+export default async function Home() {
+  // Llamadas a la API en paralelo
+  const [newsData, trendingData, categoriesData] = await Promise.all([
+    getNews(),
+    getTrending(),
+    getCategories(),
+  ]);
 
   return (
     <main className={styles.main}>
       <aside className={styles.leftSidebar}>
         <h3>Categorías</h3>
         <ul>
-          {categoriesData.map((category, index) => (
-            <li key={index}>{category}</li>
+          {categoriesData.slice(0, 10).map((category) => ( // Limitar a 10 para no saturar
+            <li key={category.id}>{category.name}</li>
           ))}
         </ul>
       </aside>
@@ -56,7 +63,7 @@ export default async function Home() {
             slug={news.slug}
             title={news.seoTitle}
             description={news.metaDescription}
-            imageUrl={getRandomLocalImage()} // Use the random local image
+            imageUrl={news.imageUrl} // Usar la imagen que ya viene de la API
           />
         ))}
       </section>
@@ -64,12 +71,21 @@ export default async function Home() {
       <aside className={styles.rightSidebar}>
         <h3>Tendencias</h3>
         <ul>
-          {trendsData.map((trend, index) => (
-            <li key={index}>
-              <span>{trend.name}</span>
-              <span>{trend.change}</span>
-            </li>
-          ))}
+          {trendingData.map((trend) => {
+            const priceChange = trend.item.data.price_change_percentage_24h.usd;
+            const isPositive = priceChange >= 0;
+            return (
+              <li key={trend.item.id}>
+                <Link href={`/precio/${trend.item.id}`}>
+                  <img src={trend.item.thumb} alt={trend.item.name} />
+                  <span>{trend.item.name} ({trend.item.symbol.toUpperCase()})</span>
+                  <span className={isPositive ? styles.positive : styles.negative}>
+                    {isPositive ? '+' : ''}{priceChange.toFixed(2)}%
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </aside>
     </main>

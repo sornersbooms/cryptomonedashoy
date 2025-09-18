@@ -1,17 +1,37 @@
 const express = require('express');
 const News = require('../models/News');
 const scrapeNews = require('../scripts/puppeteerScraper');
+const { localImages } = require('../server'); // Importar la lista de imágenes
 
 const router = express.Router();
 
-// GET all news
+// GET all news (with optional crypto filter and local image injection)
 router.route('/').get(async (req, res) => {
   try {
-    const news = await News.find().sort({ createdAt: -1 }); // Sort by newest
+    let query = {};
+    if (req.query.crypto) {
+      query.keywords = req.query.crypto;
+    }
+
+    // Use .lean() for faster queries and easier object manipulation
+    const newsArticles = await News.find(query).lean().sort({ createdAt: -1 });
+
+    // Inject random local images if available
+    let dataWithLocalImages = newsArticles;
+    if (localImages && localImages.length > 0) {
+      dataWithLocalImages = newsArticles.map(article => {
+        const randomImage = localImages[Math.floor(Math.random() * localImages.length)];
+        return {
+          ...article,
+          imageUrl: randomImage // Override the original imageUrl
+        };
+      });
+    }
+
     res.status(200).json({
       success: true,
-      count: news.length,
-      data: news
+      count: dataWithLocalImages.length,
+      data: dataWithLocalImages
     });
   } catch (err) {
     res.status(400).json({
@@ -21,10 +41,10 @@ router.route('/').get(async (req, res) => {
   }
 });
 
-// --- NUEVA RUTA AÑADIDA ---
 // GET single news by slug
 router.route('/:slug').get(async (req, res) => {
   try {
+    // No modificamos esta ruta para que la página de la noticia individual sí muestre la imagen original si la tuviera.
     const news = await News.findOne({ slug: req.params.slug });
 
     if (!news) {
@@ -42,7 +62,6 @@ router.route('/:slug').get(async (req, res) => {
     });
   }
 });
-// --- FIN DE LA NUEVA RUTA ---
 
 
 // POST to trigger scraping

@@ -1,7 +1,7 @@
 import { sitemapConfig } from './sitemap.config.js';
 import { slugify } from '../utils/slugify.js';
 import courseData from '../lib/courseData.js';
-// gracias
+
 // Función para obtener todas las rutas de los cursos desde courseData
 const getAprendeRoutes = () =>
   Object.values(courseData)
@@ -15,6 +15,56 @@ const getAprendeRoutes = () =>
       }))
     );
 
+// Función para obtener todas las rutas de criptomonedas
+const getCryptoPriceRoutes = async () => {
+  try {
+    const res = await fetch('http://localhost:5000/api/cryptos/list');
+    if (!res.ok) {
+      throw new Error(`Failed to fetch crypto list for sitemap: ${res.statusText}`);
+    }
+    const cryptos = await res.json();
+    return cryptos.map((crypto) => ({
+      url: `${sitemapConfig.baseUrl}/precio/${crypto.id}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    }));
+  } catch (error) {
+    console.error("Error in getCryptoPriceRoutes for sitemap:", error);
+    return [];
+  }
+};
+
+// Función para obtener las nuevas rutas dinámicas de /aprende/que-es/[cryptoId] y /aprende/como-funciona/[cryptoId]
+const getDynamicAprendeRoutes = async () => {
+  try {
+    const res = await fetch('http://localhost:5000/api/cryptos/list');
+    if (!res.ok) {
+      throw new Error(`Failed to fetch crypto list for dynamic aprende routes: ${res.statusText}`);
+    }
+    const cryptos = await res.json();
+    const routes = [];
+    cryptos.forEach(crypto => {
+      routes.push({
+        url: `${sitemapConfig.baseUrl}/aprende/que-es/${crypto.id}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      });
+      routes.push({
+        url: `${sitemapConfig.baseUrl}/aprende/como-funciona/${crypto.id}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      });
+    });
+    return routes;
+  } catch (error) {
+    console.error("Error in getDynamicAprendeRoutes for sitemap:", error);
+    return [];
+  }
+};
+
 export default async function sitemap() {
   const { baseUrl, apiUrl, staticPages, newsConfig, revalidateTime, api } = sitemapConfig;
   
@@ -26,10 +76,16 @@ export default async function sitemap() {
     priority: page.priority,
   }));
 
-  // Generar rutas de 'aprende' desde los datos
+  // Generar rutas de 'aprende' desde los datos de courseData
   const aprendeRoutes = getAprendeRoutes();
 
-  let allRoutes = [...staticPagesWithUrls, ...aprendeRoutes];
+  // Generar rutas de precios de criptomonedas
+  const cryptoPriceRoutes = await getCryptoPriceRoutes();
+
+  // Generar las nuevas rutas dinámicas de /aprende/que-es/[cryptoId] y /aprende/como-funciona/[cryptoId]
+  const dynamicAprendeRoutes = await getDynamicAprendeRoutes();
+
+  let allRoutes = [...staticPagesWithUrls, ...aprendeRoutes, ...cryptoPriceRoutes, ...dynamicAprendeRoutes];
 
   try {
     // Crear un controlador de aborto para timeout

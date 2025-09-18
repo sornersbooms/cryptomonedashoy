@@ -21,6 +21,7 @@ export default function Header() {
         </Link>
 
         <div className={styles.navLinks}>
+          <Link href="/precio">Precios</Link>
           <Link href="/aprende">Aprende</Link>
           <Link href="/noticias">Noticias</Link>
         </div>
@@ -34,6 +35,7 @@ export default function Header() {
 
       {isMenuOpen && (
         <div className={styles.mobileMenu}>
+          <Link href="/precio" onClick={toggleMenu}>Precios</Link>
           <Link href="/noticias" onClick={toggleMenu}>Noticias</Link>
           <Link href="/aprende" onClick={toggleMenu}>Aprende</Link>
         </div>
