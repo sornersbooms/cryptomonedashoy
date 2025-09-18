@@ -29,13 +29,13 @@ router.get('/details/:id', async (req, res) => {
      const apiUrl = `${COINGECKO_API_BASE}/coins/${id}?localization=false&tickers=true&market_data=true&community_data=false&developer_data=false&sparkline=true&vs_currencies=usd,eur,cop`;
     const response = await fetch(apiUrl);
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
     }
     const data = await response.json();
     res.json(data);
   } catch (error) {
     console.error(`Error fetching crypto details for ${req.params.id} from CoinGecko:`, error);
-    res.status(500).json({ message: 'Error fetching crypto details', error: error.message });
+    res.status(500).json({ message: 'Error fetching crypto details', error: error }); // Cambiado error.message a error
   }
 });
 
