@@ -28,6 +28,50 @@ const getCachedData = async (cacheKey, fetchFunction) => {
   return newData;
 };
 
+// --- DIAGNOSTIC ROUTE ---
+router.get('/test-connectivity', async (req, res) => {
+  const results = {};
+  const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36';
+
+  // Test CoinGecko
+  try {
+    const coingeckoRes = await fetch('https://api.coingecko.com/api/v3/ping', {
+      headers: { 'User-Agent': userAgent }
+    });
+    results.coingecko = {
+      ok: coingeckoRes.ok,
+      status: coingeckoRes.status,
+      statusText: coingeckoRes.statusText,
+    };
+  } catch (error) {
+    results.coingecko = {
+      error: true,
+      message: error.message,
+      stack: error.stack,
+    };
+  }
+
+  // Test Google
+  try {
+    const googleRes = await fetch('https://www.google.com', {
+      headers: { 'User-Agent': userAgent }
+    });
+    results.google = {
+      ok: googleRes.ok,
+      status: googleRes.status,
+      statusText: googleRes.statusText,
+    };
+  } catch (error) {
+    results.google = {
+      error: true,
+      message: error.message,
+      stack: error.stack,
+    };
+  }
+
+  res.json(results);
+});
+
 // Route to get the top 100 cryptocurrencies
 router.get('/list', async (req, res) => {
   try {
@@ -75,7 +119,6 @@ router.get('/chart/:id', async (req, res) => {
   const { days = '7', vs_currency = 'usd' } = req.query;
   try {
     const data = await getCachedData(`chart-${id}-${days}-${vs_currency}`, async () => {
-      // Reverted to fetch for reliability
       const apiUrl = `${COINGECKO_API_BASE}/coins/${id}/market_chart?vs_currency=${vs_currency}&days=${days}`;
       const response = await fetch(apiUrl, {
         headers: {
