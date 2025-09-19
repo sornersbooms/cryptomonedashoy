@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; // Importar el componente Image
 import styles from './style.module.css';
 import { api } from '../../lib/apiConfig';
+import { getRandomLocalImage } from '../../utils/imageUtils'; // Importar la función de imágenes aleatorias
 
 const NewsFeed = ({ cryptoId }) => {
   const [news, setNews] = useState([]);
@@ -39,7 +41,16 @@ const NewsFeed = ({ cryptoId }) => {
         <div className={styles.newsGrid}>
           {news.map((item) => (
             <Link href={`/noticias/${item.slug}`} key={item._id} className={styles.newsCard}>
-              {item.imageUrl && <img src={item.imageUrl} alt={item.imageAltText || item.seoTitle} className={styles.newsImage} />}
+              <div className={styles.newsImageContainer}> {/* Contenedor para la imagen */}
+                <Image
+                  src={getRandomLocalImage()}
+                  alt={item.imageAltText || item.seoTitle}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{ objectFit: 'cover' }}
+                  priority
+                />
+              </div>
               <div className={styles.cardContent}>
                 <h3 className={styles.newsTitle}>{item.seoTitle}</h3>
                 <p className={styles.newsDescription}>{item.metaDescription}</p>

@@ -4,7 +4,7 @@ import styles from './style.module.css';
 import { getRandomLocalImage } from '../../utils/imageUtils'; // Importar la función
 
 const NewsCard = ({ slug, title, description, imageUrl }) => {
-  const finalImageUrl = getRandomLocalImage(); // Siempre usar una imagen local aleatoria
+  const finalImageUrl = imageUrl; // Usar la imageUrl recibida como prop
 
   return (
     <Link href={`/noticias/${slug}`} className={styles.card}>
