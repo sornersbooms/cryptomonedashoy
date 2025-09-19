@@ -39,7 +39,7 @@ export default async function CryptoPricePage({ params }) {
     <main className={styles.mainContainer}>
       <h1>Precio de {name} Hoy ({symbol ? symbol.toUpperCase() : ''})</h1>
       
-      <CryptoStats marketData={market_data} cryptoName={symbol.toUpperCase()} />
+      <CryptoStats marketData={market_data} cryptoName={symbol ? symbol.toUpperCase() : ''} />
 
       <CryptoChart cryptoId={slug} />
 
