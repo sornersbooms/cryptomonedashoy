@@ -22,8 +22,10 @@ const app = express();
 
 // CORS Configuration
 const allowedOrigins = [
-  'https://cryptomonedas.com', 
-  'http://localhost:3000'
+  'https://cryptomonedashoy.com', // Tu dominio de producción
+  'http://localhost:3000', // Tu entorno de desarrollo local
+  // Si tu frontend en Railway usa un subdominio temporal (ej. my-app-xxxx.railway.app),
+  // añádelo también aquí durante el desarrollo/pruebas.
 ];
 
 const corsOptions = {
