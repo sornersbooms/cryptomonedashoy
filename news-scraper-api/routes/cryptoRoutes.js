@@ -1,99 +1,120 @@
 const express = require('express');
 const router = express.Router();
-const { CoinGeckoClient } = require('coingecko-api-v3'); // Mantener para trending/categories
-const client = new CoinGeckoClient(); // Mantener para trending/categories
+const { CoinGeckoClient } = require('coingecko-api-v3');
+const client = new CoinGeckoClient();
 const CryptoCache = require('../models/CryptoCache');
 
-// URL Base para la API de CoinGecko
 const COINGECKO_API_BASE = 'https://api.coingecko.com/api/v3';
+const TEN_MINUTES_IN_MS = 10 * 60 * 1000;
 
-// Ruta para obtener la lista de las 100 criptomonedas principales
+// Helper function to manage cache
+const getCachedData = async (cacheKey, fetchFunction) => {
+  const cached = await CryptoCache.findOne({ cryptoId: cacheKey });
+
+  if (cached && (Date.now() - cached.createdAt.getTime() < TEN_MINUTES_IN_MS)) {
+    console.log(`DEBUG: Returning cached data for ${cacheKey}`);
+    return cached.data;
+  }
+
+  console.log(`DEBUG: Fetching new data for ${cacheKey}`);
+  const newData = await fetchFunction();
+
+  await CryptoCache.findOneAndUpdate(
+    { cryptoId: cacheKey },
+    { data: newData, createdAt: Date.now() },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+
+  return newData;
+};
+
+// Route to get the top 100 cryptocurrencies
 router.get('/list', async (req, res) => {
   try {
-    const apiUrl = `${COINGECKO_API_BASE}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true`;
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
+    const data = await getCachedData('crypto-list', async () => {
+      const apiUrl = `${COINGECKO_API_BASE}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true`;
+      const response = await fetch(apiUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return response.json();
+    });
     res.json(data);
   } catch (error) {
-    console.error('Error fetching crypto list from CoinGecko:', error);
+    console.error('Error in /list route:', error);
     res.status(500).json({ message: 'Error fetching crypto list', error: error.message });
   }
 });
 
-// Ruta para obtener los detalles de una criptomoneda específica
+// Route to get details for a specific cryptocurrency
 router.get('/details/:id', async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-
-    // 1. Intentar obtener de la caché
-    const cachedData = await CryptoCache.findOne({ cryptoId: id });
-    if (cachedData) {
-      console.log(`DEBUG: Devolviendo datos de ${id} desde la caché.`);
-      return res.json(cachedData.data);
-    }
-
-    // 2. Si no está en caché o ha expirado, obtener de CoinGecko
-    const apiUrl = `${COINGECKO_API_BASE}/coins/${id}?tickers=true&market_data=true&community_data=false&developer_data=false&sparkline=true&vs_currencies=usd,eur,cop`;
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-    }
-    const data = await response.json();
-
-    // 3. Guardar en caché antes de devolver
-    await CryptoCache.findOneAndUpdate(
-      { cryptoId: id },
-      { data: data, createdAt: Date.now() },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
-    );
-    console.log(`DEBUG: Datos de ${id} obtenidos de CoinGecko y guardados en caché.`);
-
+    const data = await getCachedData(`details-${id}`, async () => {
+      const apiUrl = `${COINGECKO_API_BASE}/coins/${id}?tickers=true&market_data=true&community_data=false&developer_data=false&sparkline=true&vs_currencies=usd,eur,cop`;
+      const response = await fetch(apiUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+      return response.json();
+    });
     res.json(data);
   } catch (error) {
-    console.error(`Error fetching crypto details for ${req.params.id} from CoinGecko:`, error);
-    res.status(500).json({ message: 'Error fetching crypto details', error: error });
+    console.error(`Error in /details/${id} route:`, error);
+    res.status(500).json({ message: 'Error fetching crypto details', error: error.message });
   }
 });
 
-// Ruta para obtener datos históricos para el gráfico
+// Route to get historical data for the chart
 router.get('/chart/:id', async (req, res) => {
+  const { id } = req.params;
+  const { days = '7', vs_currency = 'usd' } = req.query;
   try {
-    const { id } = req.params;
-    const { days = '7', vs_currency = 'usd' } = req.query; // Por defecto 7 días y USD
-    const apiUrl = `${COINGECKO_API_BASE}/coins/${id}/market_chart?vs_currency=${vs_currency}&days=${days}`;
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
+    const data = await getCachedData(`chart-${id}-${days}-${vs_currency}`, async () => {
+      // Reverted to fetch for reliability
+      const apiUrl = `${COINGECKO_API_BASE}/coins/${id}/market_chart?vs_currency=${vs_currency}&days=${days}`;
+      const response = await fetch(apiUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return response.json();
+    });
     res.json(data);
   } catch (error) {
-    console.error(`Error fetching market chart for ${req.params.id} from CoinGecko:`, error);
+    console.error(`Error in /chart/${id} route:`, error);
     res.status(500).json({ message: 'Error fetching market chart', error: error.message });
   }
 });
 
-// Ruta para obtener las criptomonedas en tendencia (usando la librería coingecko-api-v3)
+// Route to get trending cryptocurrencies
 router.get('/trending', async (req, res) => {
   try {
-    const response = await client.trending();
-    res.json(response.coins); // Devuelve solo el array de monedas
+    const data = await getCachedData('trending-cryptos', async () => {
+      const response = await client.trending();
+      return response.coins; // The original code returned response.coins
+    });
+    res.json(data);
   } catch (error) {
-    console.error('Error fetching trending cryptos from CoinGecko:', error);
+    console.error('Error in /trending route:', error);
     res.status(500).json({ message: 'Error fetching trending cryptos', error: error.message });
   }
 });
 
-// Ruta para obtener la lista de categorías (usando la librería coingecko-api-v3)
+// Route to get the list of categories
 router.get('/categories', async (req, res) => {
   try {
-    const response = await client.coinCategoriesList();
-    res.json(response);
+    const data = await getCachedData('crypto-categories', async () => {
+      return client.coinCategoriesList();
+    });
+    res.json(data);
   } catch (error) {
-    console.error('Error fetching categories from CoinGecko:', error);
+    console.error('Error in /categories route:', error);
     res.status(500).json({ message: 'Error fetching categories', error: error.message });
   }
 });

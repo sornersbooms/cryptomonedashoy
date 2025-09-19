@@ -14,13 +14,15 @@ const fetchApi = async (endpoint, options = {}) => {
   try {
     const res = await fetch(url, finalOptions);
     if (!res.ok) {
-      console.error(`API call failed for ${url} with status: ${res.status}`);
-      throw new Error(`Failed to fetch data from ${endpoint}`);
+      // Try to get more specific error info from the backend response
+      const errorBody = await res.json().catch(() => ({ message: res.statusText }));
+      console.error(`API call failed for ${url} with status: ${res.status}. Backend message: ${errorBody.message || 'No specific error message provided.'}`);
+      return null; // Still return null to avoid breaking components
     }
     return await res.json();
   } catch (error) {
-    console.error(`Error fetching from ${endpoint}:`, error);
-    // Retornar un estado consistente en caso de error
+    // This catches network errors (e.g., backend is down)
+    console.error(`Network error or fetch failed for ${endpoint}:`, error);
     return null;
   }
 };

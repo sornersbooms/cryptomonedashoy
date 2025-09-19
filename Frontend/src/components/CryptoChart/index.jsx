@@ -2,31 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  TimeScale
-} from 'chart.js';
 import 'chart.js/auto'; // Automatically registers the necessary components
 import styles from './style.module.css';
 import { api } from '../../lib/apiConfig';
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  TimeScale
-);
 
 const CryptoChart = ({ cryptoId }) => {
   const [chartData, setChartData] = useState(null);
@@ -39,7 +17,7 @@ const CryptoChart = ({ cryptoId }) => {
         setError(null);
         const data = await api.getCryptoChart(cryptoId, days);
         
-        if (!data) {
+        if (!data || !data.prices) { // Check for data and prices array
             throw new Error('Failed to fetch chart data');
         }
 
@@ -96,25 +74,27 @@ const CryptoChart = ({ cryptoId }) => {
       {error && <div className={styles.error}>{error}</div>}
       {!chartData && !error && <div className={styles.loading}>Loading Chart...</div>}
       {chartData && (
-        <Line 
-          data={chartData} 
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    ticks: {
-                        maxTicksLimit: 10, // Limit number of x-axis labels
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false // Hide legend
-                }
-            }
-          }}
-        />
+        <div style={{height: '400px'}}> {/* Wrapper with explicit height */}
+          <Line 
+            data={chartData} 
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  x: {
+                      ticks: {
+                          maxTicksLimit: 10, // Limit number of x-axis labels
+                      }
+                  }
+              },
+              plugins: {
+                  legend: {
+                      display: false // Hide legend
+                  }
+              }
+            }}
+          />
+        </div>
       )}
     </div>
   );

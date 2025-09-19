@@ -20,13 +20,27 @@ connectDB();
 
 const app = express();
 
-// CORS middleware
+// CORS Configuration
+const allowedOrigins = [
+  'https://cryptomonedas.com', 
+  'http://localhost:3000'
+];
+
 const corsOptions = {
-  origin: 'https://cryptomonedas.com', // Reemplaza con el dominio real de tu frontend
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // Si necesitas enviar cookies o encabezados de autorización
+  credentials: true,
   optionsSuccessStatus: 204
 };
+
 app.use(cors(corsOptions));
 
 // Body parser
