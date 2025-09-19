@@ -2,26 +2,19 @@ import Image from 'next/image';
 import styles from './style.module.css';
 import MarkdownRenderer from '../../../components/MarkdownRenderer';
 import { getRandomLocalImage } from '../../../utils/imageUtils';
+import { api } from '../../../lib/apiConfig';
 
+// Helper function to fetch and process article data
 const getArticleData = async (slug) => {
-  try {
-            const res = await fetch(`${process.env.API_URL}/news/${slug}`);
-    if (!res.ok) { return null; }
-    const newsData = await res.json();
-    const article = newsData.data;
+  const response = await api.getNewsArticle(slug);
+  // The API returns { success: true, data: article }
+  const article = response?.data;
 
-    if (article) {
-      const relativeImagePath = getRandomLocalImage();
-      // For the <Image> component, we need the relative path.
-      article.displayImage = relativeImagePath;
-      // For OpenGraph (social sharing), we need the full, absolute URL.
-      article.ogImage = `${process.env.API_URL}${relativeImagePath}`;
-    }
-    return article;
-  } catch (error) {
-    console.error("Error fetching article data:", error);
-    return null;
+  if (article) {
+    // Assign a random local image for display. This is a relative path.
+    article.displayImage = getRandomLocalImage();
   }
+  return article;
 };
 
 export async function generateMetadata({ params }) {
@@ -38,11 +31,13 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: article.seoTitle,
       description: article.metaDescription,
+      // Note: Using a random local image for OG is not ideal as the path is relative.
+      // For this to work correctly in production, an absolute URL to a hosted image is needed.
       images: [
         {
-          url: article.ogImage, // Use the absolute URL for social media
-          width: 1200, // Typical OG image width
-          height: 630, // Typical OG image height
+          url: article.displayImage, 
+          width: 1200,
+          height: 630,
           alt: article.imageAltText,
         },
       ],

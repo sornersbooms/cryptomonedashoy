@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './style.module.css';
+import { api } from '../../lib/apiConfig';
 
 const NewsFeed = ({ cryptoId }) => {
   const [news, setNews] = useState([]);
@@ -14,12 +15,8 @@ const NewsFeed = ({ cryptoId }) => {
     const fetchNews = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/news?crypto=${cryptoId}`);
-        if (!res.ok) {
-          throw new Error('Failed to fetch news');
-        }
-        const data = await res.json();
-        setNews(data.data || []);
+        const response = await api.getNews(cryptoId);
+        setNews(response?.data || []);
       } catch (error) {
         console.error("Error fetching news:", error);
         setNews([]);

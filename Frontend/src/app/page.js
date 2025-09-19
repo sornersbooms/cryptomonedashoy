@@ -1,60 +1,26 @@
 import styles from "./page.module.css";
 import NewsCard from "../components/NewsCard";
 import Link from 'next/link'; // Importar Link
-
-// --- OBTENER DATOS --- 
-async function getNews() {
-  console.log("DEBUG: API_URL en getNews:", process.env.API_URL);
-  try {
-    const res = await fetch(`${process.env.API_URL}/api/news`, { cache: 'no-store' });
-    if (!res.ok) {
-      console.error("DEBUG: Error al obtener noticias. Estado de la respuesta:", res.status);
-      throw new Error('Failed to fetch news');
-    }
-    return (await res.json()).data;
-  } catch (error) {
-    console.error("Error fetching news:", error);
-    return [];
-  }
-}
-
-async function getTrending() {
-  try {
-    const res = await fetch(`${process.env.API_URL}/api/cryptos/trending`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Failed to fetch trending data');
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching trending:", error);
-    return [];
-  }
-}
-
-async function getCategories() {
-  try {
-    const res = await fetch(`${process.env.API_URL}/api/cryptos/categories`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Failed to fetch categories');
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
-}
+import { api } from '../lib/apiConfig';
 
 // --- COMPONENTE PRINCIPAL ---
 export default async function Home() {
   // Llamadas a la API en paralelo
-  const [newsData, trendingData, categoriesData] = await Promise.all([
-    getNews(),
-    getTrending(),
-    getCategories(),
+  const [newsResponse, trendingData, categoriesData] = await Promise.all([
+    api.getNews(),
+    api.getTrending(),
+    api.getCategories(),
   ]);
+
+  // Extraer los datos de la respuesta de noticias y manejar casos de error
+  const newsData = newsResponse?.data || [];
 
   return (
     <main className={styles.main}>
       <aside className={styles.leftSidebar}>
         <h3>Categorías</h3>
         <ul>
-          {categoriesData.slice(0, 10).map((category) => ( // Limitar a 10 para no saturar
+          {(categoriesData || []).slice(0, 10).map((category) => ( // Limitar a 10 y manejar error
             <li key={category.id}>{category.name}</li>
           ))}
         </ul>
@@ -75,7 +41,7 @@ export default async function Home() {
       <aside className={styles.rightSidebar}>
         <h3>Tendencias</h3>
         <ul>
-          {trendingData.map((trend) => {
+          {(trendingData || []).map((trend) => {
             const priceChange = trend.item.data.price_change_percentage_24h.usd;
             const isPositive = priceChange >= 0;
             return (

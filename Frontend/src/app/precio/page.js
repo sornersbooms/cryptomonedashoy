@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import styles from './page.module.css';
 import SparklineChart from '@/components/SparklineChart';
+import { api } from '../../lib/apiConfig';
 
 // Helper para formatear números
 const formatCurrency = (value) => {
@@ -15,22 +16,8 @@ const formatLargeNumber = (value) => {
     return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 }).format(value);
 }
 
-async function getMarketData() {
-  try {
-    const res = await fetch(`${process.env.API_URL}/api/cryptos/list`, { cache: 'no-store' });
-    if (!res.ok) {
-      console.error("DEBUG: Error al obtener datos del mercado. Estado de la respuesta:", res.status);
-      throw new Error('Failed to fetch market data');
-    }
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching market data:", error);
-    return [];
-  }
-}
-
 export default async function PriceIndexPage() {
-  const marketData = await getMarketData();
+  const marketData = await api.getCryptoList() || [];
 
   return (
     <main className={styles.mainContainer}>

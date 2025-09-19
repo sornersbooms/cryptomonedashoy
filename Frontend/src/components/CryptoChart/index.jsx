@@ -15,6 +15,7 @@ import {
 } from 'chart.js';
 import 'chart.js/auto'; // Automatically registers the necessary components
 import styles from './style.module.css';
+import { api } from '../../lib/apiConfig';
 
 ChartJS.register(
   CategoryScale,
@@ -36,12 +37,12 @@ const CryptoChart = ({ cryptoId }) => {
     const fetchData = async () => {
       try {
         setError(null);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cryptos/chart/${cryptoId}?days=${days}`);
-        if (!res.ok) {
-          throw new Error(`Failed to fetch chart data: ${res.statusText}`);
-        }
-        const data = await res.json();
+        const data = await api.getCryptoChart(cryptoId, days);
         
+        if (!data) {
+            throw new Error('Failed to fetch chart data');
+        }
+
         const formattedData = {
           labels: data.prices.map(price => new Date(price[0]).toLocaleDateString()),
           datasets: [

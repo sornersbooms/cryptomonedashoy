@@ -1,23 +1,11 @@
 import NewsCard from '../../components/NewsCard';
 import { getRandomLocalImage } from '../../utils/imageUtils';
 import styles from './noticias.module.css';
-
-async function getNews() {
-  try {
-    const res = await fetch(`${process.env.API_URL}/news`, { cache: 'no-store' });
-    if (!res.ok) {
-      throw new Error('Failed to fetch data');
-    }
-    const data = await res.json();
-    return data.data;
-  } catch (error) {
-    console.error("Error fetching news:", error);
-    return [];
-  }
-}
+import { api } from '../../lib/apiConfig';
 
 export default async function NoticiasPage() {
-  const newsData = await getNews();
+  const newsResponse = await api.getNews();
+  const newsData = newsResponse?.data || [];
 
   return (
     <div className={styles.pageContainer}>
