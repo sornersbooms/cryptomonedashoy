@@ -36,7 +36,7 @@ router.get('/details/:id', async (req, res) => {
     }
 
     // 2. Si no está en caché o ha expirado, obtener de CoinGecko
-    const apiUrl = `${COINGECKO_API_BASE}/coins/${id}?localization=false&tickers=true&market_data=true&community_data=false&developer_data=false&sparkline=true&vs_currencies=usd,eur,cop`;
+    const apiUrl = `${COINGECKO_API_BASE}/coins/${id}?tickers=true&market_data=true&community_data=false&developer_data=false&sparkline=true&vs_currencies=usd,eur,cop`;
     const response = await fetch(apiUrl);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
