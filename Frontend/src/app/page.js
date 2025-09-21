@@ -2,6 +2,7 @@ import styles from "./page.module.css";
 import NewsCard from "../components/NewsCard";
 import Link from 'next/link'; // Importar Link
 import { api } from '../lib/apiConfig';
+import { getRandomLocalImage } from '../utils/imageUtils'; // Importar la función
 
 // --- COMPONENTE PRINCIPAL ---
 export default async function Home() {
@@ -33,7 +34,7 @@ export default async function Home() {
             slug={news.slug}
             title={news.seoTitle}
             description={news.metaDescription}
-            imageUrl={news.imageUrl} // Usar la imagen que ya viene de la API
+            imageUrl={getRandomLocalImage()} // Usar siempre una imagen aleatoria
           />
         ))}
       </section>
